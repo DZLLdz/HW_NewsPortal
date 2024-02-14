@@ -1,0 +1,145 @@
+1)-------------------------------------------------------------------------------------------------------------------------------------
+>>> user_one = User.objects.create_user(username="User1")
+>>> user_two = User.objects.create_user(username="User2")
+>>> User.objects.all()
+<QuerySet [<User: User1>, <User: User2>]>
+
+2)-------------------------------------------------------------------------------------------------------------------------------------
+>>> a1 = Author.objects.create(name_author=user_one)
+>>> a2 = Author.objects.create(name_author=user_two)
+>>> Author.objects.all()
+<QuerySet [<Author: Author object (1)>, <Author: Author object (2)>]>
+
+3)-------------------------------------------------------------------------------------------------------------------------------------
+>>> Category.objects.create(name="Sport")
+<Category: Category object (1)>
+>>> Category.objects.create(name="Culture")
+<Category: Category object (2)>
+>>> Category.objects.create(name="Buisness")
+<Category: Category object (3)>
+>>> Category.objects.create(name="Educations")
+<Category: Category object (4)>
+>>> Category.objects.create(name="Other")
+<Category: Category object (5)>
+>>> Category.objects.all()
+<QuerySet [<Category: Category object (1)>, <Category: Category object (2)>, <Category: Category object (3)>, <Category: Category object (4)>, <Category: Category object (5)>]>
+
+4)-------------------------------------------------------------------------------------------------------------------------------------
+>>> p1 = Post.objects.create(post_type=Post.article_post, post_author=a1, post_name = "Art1", post_text="1234567890qwertyuiop")
+>>> p2 = Post.objects.create(post_type=Post.news_post, post_author=a1, post_name = "News1", post_text="1234567890qwertyuiop")
+>>> p3 = Post.objects.create(post_type=Post.news_post, post_author=a2, post_name = "News2", post_text="1234567890qwertyuiop")
+>>> p4 = Post.objects.create(post_type=Post.article_post, post_author=a1, post_name = "Art2", post_text="1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop")
+>>> p5 = Post.objects.create(post_type=Post.article_post, post_author=a2, post_name = "Art3", post_text="1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop1234567890qwertyuiop")
+
+5)-------------------------------------------------------------------------------------------------------------------------------------
+>>> c1 = Category.objects.all()[1]
+>>> c2 = Category.objects.all()[3]
+>>> post = Post.objects.get(id=1)
+>>> post
+<Post: Post object (1)>
+>>> post.categories.add(c1)
+>>> post.categories.add(c2)
+>>> post.categories.all()
+<QuerySet [<Category: Category object (2)>, <Category: Category object (4)>]>
+>>> post.categories.all().values()
+<QuerySet [{'id': 2, 'name': 'Culture'}, {'id': 4, 'name': 'Educations'}]>
+>>> post = Post.objects.get(id=2)
+>>> post.categories.add(c2)
+>>> post = Post.objects.get(id=3)
+>>> post.categories.add(c1)
+>>> c3 = Category.objects.all()[0]
+>>> c4 = Category.objects.all()[4]
+>>> post = Post.objects.get(id=3)
+>>> post.categories.add(c3)
+>>> post = Post.objects.get(id=4)
+>>> post.categories.add(c3)
+>>> post = Post.objects.get(id=5)
+>>> post.categories.add(c4)
+
+6)-------------------------------------------------------------------------------------------------------------------------------------
+>>> user_three = User.objects.create_user(username="User3")
+>>> p_for_c = Post.objects.all()[4]
+>>> comm1 = Comment.objects.create(post = p_for_c, user = user_three, comm_text = "I'm was here!")
+>>> wr_user = User.objects.all()[0]
+>>> p_for_c = Post.objects.all()[0]
+>>> comm2 = Comment.objects.create(post = p_for_c, user = wr_user, comm_text = "I'm was here!1")
+>>> p_for_c = Post.objects.all()[1]
+>>> comm3 = Comment.objects.create(post = p_for_c, user = wr_user, comm_text = "I'm was here!2")
+>>> wr_user = User.objects.all()[2]
+>>> comm4 = Comment.objects.create(post = p_for_c, user = wr_user, comm_text = "I'm was here!3")
+>>> p_for_c = Post.objects.all()[0]
+>>> comm5 = Comment.objects.create(post = p_for_c, user = wr_user, comm_text = "I'm was here!4")
+
+7)-------------------------------------------------------------------------------------------------------------------------------------
+>>> p1.like()
+Рейтинг поста автора:Author object (1) повысился! (1)
+>>> p1.like()
+Рейтинг поста автора:Author object (1) повысился! (2)
+>>> p1.like()
+Рейтинг поста автора:Author object (1) повысился! (3)
+>>> comm1.dislike()
+Рейтинг комментария:User3 понизился! (-1)
+>>> comm1.dislike()
+Рейтинг комментария:User3 понизился! (-2)
+>>> comm1.dislike()
+Рейтинг комментария:User3 понизился! (-3)
+>>> comm2.like()
+Рейтинг комментария:User1 повысился! (1)
+>>> comm2.like()
+Рейтинг комментария:User1 повысился! (2)
+>>> comm2.like()
+Рейтинг комментария:User1 повысился! (3)
+>>> comm2.like()
+Рейтинг комментария:User1 повысился! (4)
+>>> comm3.like()
+Рейтинг комментария:User1 повысился! (1)
+>>> comm3.like()
+Рейтинг комментария:User1 повысился! (2)
+>>> comm4.like()
+Рейтинг комментария:User3 повысился! (1)
+>>> comm4.like()
+Рейтинг комментария:User3 повысился! (2)
+>>> comm4.like()
+Рейтинг комментария:User3 повысился! (3)
+>>> comm5.dislike()
+Рейтинг комментария:User3 понизился! (-1)
+>>> comm5.dislike()
+Рейтинг комментария:User3 понизился! (-2)
+>>> comm5.dislike()
+Рейтинг комментария:User3 понизился! (-3)
+>>> comm5.dislike()
+Рейтинг комментария:User3 понизился! (-4)
+>>> comm5.dislike()
+Рейтинг комментария:User3 понизился! (-5)
+
+8)-------------------------------------------------------------------------------------------------------------------------------------
+>>> a1.update_rating()
+Общий:[19]! За статьи:[9], комментарии автора:[6], комментарии пользователей:[4]
+>>> a2.update_rating()
+Общий:[-3]! За статьи:[0], комментарии автора:[0], комментарии пользователей:[-3]
+
+9)-------------------------------------------------------------------------------------------------------------------------------------
+>>> best_author = Author.objects.all().order_by('-author_rating').values('name_author_id__username', 'author_rating').first()
+>>> best_author
+{'name_author_id__username': 'User1', 'author_rating': 19}
+
+10)-------------------------------------------------------------------------------------------------------------------------------------
+>>> find_art = Post.objects.filter(post_type='ART')
+>>> find_art
+<QuerySet [<Post: Post object (1)>, <Post: Post object (4)>, <Post: Post object (5)>]>
+>>> best_art_id = find_art.order_by('-post_rating').values('id').first()['id']
+>>> best_art_id
+1
+>>> best_art = find_art.order_by('-post_rating').values('post_add','post_author_id__name_author_id__username','post_rating','post_name','post_text').first()
+>>> best_art
+{'post_add': datetime.datetime(2024, 2, 13, 18, 42, 3, 470616, tzinfo=datetime.timezone.utc), 'post_author_id__name_author_id__username': 'User1', 'post_rating': 3, 'post_name': 'Art1', 'post_text': '1234567890qwertyuiop'}
+>>> best_art.values()
+dict_values([datetime.datetime(2024, 2, 13, 18, 42, 3, 470616, tzinfo=datetime.timezone.utc), 'User1', 3, 'Art1', '1234567890qwertyuiop'])
+>>> post_for_pr = Post.objects.get(id=best_art_id)
+>>> post_text_pr = post_for_pr.preview()
+'1234567890qwertyuiop...'
+
+11)-------------------------------------------------------------------------------------------------------------------------------------
+>>> all_comm_for_best_art = Comment.objects.filter(post_id=best_art_id).values('comm_add','user_id__username','comm_rating','comm_text')
+>>> all_comm_for_best_art
+<QuerySet [{'comm_add': datetime.datetime(2024, 2, 13, 20, 10, 43, 442820, tzinfo=datetime.timezone.utc), 'user_id__username': 'User1', 'comm_rating': 4, 'comm_text': "I'm was here!1"}, {'comm_add': datetime.datetime(2024, 2, 13, 20, 14, 49, 785972, tzinfo=datetime.timezone.utc), 'user_id__username': 'User3', 'comm_rating': -5, 'comm_text': "I'm was here!4"}]>
