@@ -40,6 +40,9 @@ class Post(models.Model):
     post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category, through='PostCategory')
 
+    def __str__(self):
+        return self.post_name
+
     def like(self):
         self.post_rating += 1
         self.save()
@@ -51,7 +54,9 @@ class Post(models.Model):
         print(f"Рейтинг поста автора:{self.post_author} понизился! ({self.post_rating})")
 
     def preview(self):
-        post_text_preview = f"{self.post_text[0:124:]}..."
+        post_text_preview = self.post_text[0:124]
+        if len(self.post_text) > 124:
+            post_text_preview = f"{self.post_text[0:121:]}..."
         return post_text_preview
 
 class PostCategory(models.Model):
@@ -65,6 +70,9 @@ class Comment(models.Model):
     comm_rating = models.IntegerField(default=0)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.comm_text
 
     def like(self):
         self.comm_rating += 1

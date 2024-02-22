@@ -1,0 +1,48 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Все новости
+{% endblock title %}
+
+{% block content %}
+<h1>Все новости</h1>
+<h1>{{ time_now|date:'d:M:Y' }}</h1>
+<h3>{% current_time '%d %b %Y' %}</h3>
+<h4>{{ next_post|default_if_none:"Наблюдаем за событиями...<br>Ищем новых авторов..."}}</h4>
+
+{% if posts %}
+    <table>
+        <tr>
+            <td>Тип</td>
+            <td>Дата публикации</td>
+            <td>Заголовок</td>
+            <td>Содержание</td>
+            <td>Рейтинг</td>
+            <td>Категория</td>
+        </tr>
+
+        {% for post in posts %}
+        <tr>
+            <td>{{ post.post_type }}</td>
+            <td>{{ post.post_add|date:'d:M:Y' }}</td>
+            <td>{{ post.post_name | truncatechars:10 | censor_str }}</td>
+            <td>{{ post.post_text | truncatechars:20 | censor_str }}</td>
+            <td>{{ post.post_rating | like_valute }}</td>
+            <td>
+                {% for cat in post.categories.all %}
+                {{ cat.name }}
+                <br>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+{% else %}
+    <h1>Новостей пока нет!</h1>
+{% endif %}
+
+{% endblock content %}
