@@ -1,0 +1,30 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+{{ post.post_name }}
+{% endblock title %}
+
+{% block content %}
+<table>
+    <tr>
+        <td>
+            <h3>Текущая дата: {% current_time '%d %b %Y' %}</h3>
+        </td>
+        <td>
+           <h3>Статья: {{ post.post_name | censor_str }}</h3>
+        </td>
+        <td>
+            <h3>от: {{ post.post_add|date:'d M Y H:i' }}</h3>
+        </td>
+    </tr>
+
+</table>
+<hr>
+{{ post.post_text | censor_str }}
+<hr>
+{{ post.post_text }}
+<hr>
+{% endblock content %}
