@@ -8,7 +8,7 @@ def like_valute(value):
 
 @register.filter()
 def censor_str(value_in):
-    words_to_filter = ['почему','как','зачем','низкий']
+    words_to_filter = ['почему', 'как', 'зачем', 'низкий']
     try:
         split_values = value_in.split()
     except AttributeError:
@@ -38,6 +38,9 @@ def censor_str(value_in):
         # print(value_out)
         return f'{value_out}'
 
+@register.filter()
+def obj_to_str(input):
+    return str(input)
 
 @register.filter()
 def title_text(text_in):

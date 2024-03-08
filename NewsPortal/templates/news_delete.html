@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+{% block title %}
+{{ news.post_name }}
+{% endblock title %}
+
+{% block content %}
+<h1>Удаление новости</h1>
+<hr>
+<form action="" method="post">
+    {% csrf_token %}
+    <p>Удаляем "{{ post.post_type }}:{{ post.post_name }}"?</p>
+    <hr>
+    {{ post.post_text | truncatechars:40 | censor_str }}
+    <hr>
+    <input type="submit" value="Delete" />
+</form>
+{% endblock content %}

@@ -4,16 +4,19 @@
 {% load custom_tags %}
 
 {% block title %}
-All posts
+Articles
 {% endblock title %}
 
 {% block content %}
-    <h1>Все события</h1>
+    <h1>Поиск статей</h1>
     <h1>{{ time_now|date:'d:M:Y' }}</h1>
 
-    <h4>{{ next_post|default_if_none:"Наблюдаем за событиями...<br>Ищем новых авторов..."}}</h4>
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Найти" />
+    </form>
 
-    {% if posts %}
+    {% if news_search %}
     <hr>
         <table>
             <tr>
@@ -26,33 +29,24 @@ All posts
                 <td>Категория</td>
                 <td>Ссылка</td>
             </tr>
-
-            {% for post in posts %}
-
+            {% for news in news_search %}
                 <tr>
-                    <td>{{ post.post_type }}</td>
-                    <td>{{ post.post_author.name_author }}</td>
-                    <td>{{ post.post_add|date:'d:M:Y' }}</td>
-                    <td>{{ post.post_name | truncatechars:10 | censor_str }}</td>
-                    <td>{{ post.post_text | truncatechars:20 | censor_str }}</td>
-                    <td>{{ post.post_rating | like_valute }}</td>
+                    <td>{{ news.post_type }}</td>
+                    <td>{{ news.post_author.name_author }}</td>
+                    <td>{{ news.post_add|date:'d:M:Y' }}</td>
+                    <td>{{ news.post_name | truncatechars:10 | censor_str }}</td>
+                    <td>{{ news.post_text | truncatechars:40 | censor_str }}</td>
+                    <td>{{ news.post_rating | like_valute }}</td>
                     <td>
-                        {% for cat in post.categories.all %}
+                        {% for cat in news.categories.all %}
                             {{ cat.name }}
                             <br>
                         {% endfor %}
                     </td>
-                    <td>{% if post.post_type == "ART" %}
-                            <a href="http://127.0.0.1:8000/articles/{{ post.id }}">Читать далее</a>
-                        {% elif post.post_type == "NEWS" %}
-                            <a href="http://127.0.0.1:8000/news/{{ post.id }}">Читать далее</a>
-                        {% elif post.post_type == "OTH" %}
-                            <p>на рассмотрении</p>
-                        {% endif %}
-
+                    <td>
+                        <a href="http://127.0.0.1:8000/news/{{ post.id }}">Читать далее</a>
                     </td>
                 </tr>
-
             {% endfor %}
         </table>
     <hr>
@@ -76,7 +70,7 @@ All posts
     {% endif %}
 
     {% else %}
-        <h1>Событий нет!</h1>
+        <h1>Статей нет!</h1>
     {% endif %}
 
 {% endblock content %}

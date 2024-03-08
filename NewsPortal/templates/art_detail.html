@@ -4,7 +4,7 @@
 {% load custom_tags %}
 
 {% block title %}
-{{ post.post_name }}
+{{ art.post_name }}
 {% endblock title %}
 
 {% block content %}
@@ -14,17 +14,20 @@
             <h3>Текущая дата: {% current_time '%d %b %Y' %}</h3>
         </td>
         <td>
-           <h3>Статья: {{ post.post_name | censor_str }}</h3>
+           <h3>Статья: {{ art.post_name | censor_str }}</h3>
         </td>
         <td>
-            <h3>от: {{ post.post_add|date:'d M Y H:i' }}</h3>
+            <h3>от: {{ art.post_add|date:'d M Y H:i' }}</h3>
         </td>
     </tr>
-
 </table>
 <hr>
-{{ post.post_text | censor_str }}
+{{ art.post_text | censor_str }}
 <hr>
-{{ post.post_text }}
+{{ art.post_text }}
 <hr>
+<button><a href="/news/{{ art.id }}/update">Update</a></button>
+<button><a href="/news/{{ art.id }}/delete">Delete</a></button>
+<hr>
+<h3>Комментарии</h3>
 {% endblock content %}
