@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
+from django.urls import reverse
 
 
 class Author(models.Model):
@@ -9,15 +10,19 @@ class Author(models.Model):
     author_rating = models.IntegerField(default=0)
 
     def update_rating(self):
-        a_t_post_rating = Post.objects.filter(post_author_id=self, post_type='ART').aggregate(total_in_p = Coalesce(Sum('post_rating'), 0))['total_in_p']
-        a_t_comm_rating = Comment.objects.filter(user_id=self.name_author).aggregate(total_in_с = Coalesce(Sum('comm_rating'), 0))['total_in_с']
-        all_comm_rating = Comment.objects.filter(post__post_author=self).aggregate(total_in_ac= Coalesce(Sum('comm_rating'), 0))['total_in_ac']
+        a_t_post_rating = Post.objects.filter(post_author_id=self, post_type='ART').aggregate(total_in_p=Coalesce(Sum('post_rating'), 0))['total_in_p']
+        a_t_comm_rating = Comment.objects.filter(user_id=self.name_author).aggregate(total_in_с=Coalesce(Sum('comm_rating'), 0))['total_in_с']
+        all_comm_rating = Comment.objects.filter(post__post_author=self).aggregate(total_in_ac=Coalesce(Sum('comm_rating'), 0))['total_in_ac']
         self.author_rating = a_t_post_rating * 3 + a_t_comm_rating + all_comm_rating
         print(f"Общий:[{self.author_rating}]! За статьи:[{a_t_post_rating * 3}], комментарии автора:[{a_t_comm_rating}], комментарии пользователей:[{all_comm_rating}]")
         self.save()
 
+
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Post(models.Model):
@@ -26,8 +31,8 @@ class Post(models.Model):
     other = 'OTH'
 
     TYPEPOST = [
-        (news_post,'Новость'),
-        (article_post,'Статья'),
+        (news_post, 'Новость'),
+        (article_post, 'Статья'),
         (other, 'Другое')
     ]
 
@@ -37,11 +42,14 @@ class Post(models.Model):
     post_text = models.TextField()
     post_rating = models.IntegerField(default=0)
 
-    post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    post_author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Имя Автора')
     categories = models.ManyToManyField(Category, through='PostCategory')
 
     def __str__(self):
         return self.post_name
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
     def like(self):
         self.post_rating += 1
@@ -58,6 +66,7 @@ class Post(models.Model):
         if len(self.post_text) > 124:
             post_text_preview = f"{self.post_text[0:121:]}..."
         return post_text_preview
+
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

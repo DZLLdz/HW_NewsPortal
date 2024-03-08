@@ -1,0 +1,33 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+{{ post.post_name }}
+{% endblock title %}
+
+{% block content %}
+<table>
+    <tr>
+        <td>
+            <h3>Текущая дата: {% current_time '%d %b %Y' %}</h3>
+        </td>
+        <td>
+           <h3>Статья: {{ news.post_name | censor_str }}</h3>
+        </td>
+        <td>
+            <h3>от: {{ news.post_add|date:'d M Y H:i' }}</h3>
+        </td>
+    </tr>
+</table>
+<hr>
+{{ news.post_text | censor_str }}
+<hr>
+{{ news.post_text }}
+<hr>
+<button><a href="/news/{{ news.id }}/update">Update</a></button>
+<button><a href="/news/{{ news.id }}/delete">Delete</a></button>
+<hr>
+<h3>Комментарии</h3>
+{% endblock content %}
