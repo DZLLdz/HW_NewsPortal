@@ -3,6 +3,6 @@ Lib/*
 .idea/*
 Scripts/*
 pyvenv.cfg
-NewsPortal/Newsportal/__pycache__/*
-NewsPortal/Newsportal/__pycache__/*
-/NewsPortal/NewsPortal/__pycache__
+NewsPortal/NewsPortal/__pycache__/*
+NewsPortal/Newsportalapp/__pycache__/*
+NewsPortal/NewsPortal/__pycache__/*
