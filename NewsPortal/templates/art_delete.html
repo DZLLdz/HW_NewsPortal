@@ -10,9 +10,9 @@
 <hr>
 <form action="" method="post">
     {% csrf_token %}
-    <p>Удаляем "{{ art.post_type }}:{{ art.post_name }}"?</p>
+    <p>Удаляем "{{ post.post_type }}:{{ post.post_name }}"?</p>
     <hr>
-    {{ art.post_text | truncatechars:40 | censor_str }}
+    {{ post.post_text | truncatechars:40 | censor_str }}
     <hr>
     <input type="submit" value="Delete" />
 </form>
