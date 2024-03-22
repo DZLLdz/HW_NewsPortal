@@ -3,6 +3,7 @@ from .views import (NewsList, NewsSearchList, NewsDetail, NewsUpdate, NewsDelete
                     ArtsList, ArtsSearchList, ArtDetail, ArtUpdate, ArtDelete,
                     PostsList, PostCreate,)
 
+
 urlpatterns = [
     path('all_posts/', PostsList.as_view(), name='post_list'),
     path('news/', NewsList.as_view(), name='news_list'),

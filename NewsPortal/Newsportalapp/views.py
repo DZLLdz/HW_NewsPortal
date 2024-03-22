@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from django.http import request
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -10,7 +9,7 @@ from .filters import PostFilter
 from .forms import PostForm
 
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_create.html'
@@ -87,14 +86,14 @@ class ArtDetail(DetailView):
     queryset = Post.objects.filter(post_type=Post.article_post)
 
 
-class ArtUpdate(UpdateView):
+class ArtUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'art_update.html'
     queryset = Post.objects.filter(post_type=Post.article_post)
 
 
-class ArtDelete(DeleteView):
+class ArtDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'art_delete.html'
     queryset = Post.objects.filter(post_type=Post.article_post)
@@ -143,7 +142,7 @@ class NewsDetail(DetailView):
     queryset = Post.objects.filter(post_type=Post.news_post)
 
 
-class NewsUpdate(UpdateView):
+class NewsUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'news_update.html'
@@ -151,7 +150,7 @@ class NewsUpdate(UpdateView):
     success_url = reverse_lazy('news_list')
 
 
-class NewsDelete(DeleteView):
+class NewsDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'news_delete.html'
     queryset = Post.objects.filter(post_type=Post.news_post)
