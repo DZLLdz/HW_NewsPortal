@@ -20,9 +20,15 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    subscribers = models.ManyToManyField(User, blank=True, null=True, related_name='categories', through='SubscribeCategory')
 
     def __str__(self):
         return self.name
+
+
+class SubscribeCategory(models.Model):
+    sub = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Post(models.Model):
@@ -65,7 +71,7 @@ class Post(models.Model):
         post_text_preview = self.post_text[0:124]
         if len(self.post_text) > 124:
             post_text_preview = f"{self.post_text[0:121:]}..."
-        return post_text_preview
+        return str(post_text_preview)
 
 
 class PostCategory(models.Model):

@@ -1,15 +1,16 @@
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Comment
+from .models import Post, Comment, Category
 from .filters import PostFilter
 from .forms import PostForm
 
 
-class PostCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post
     template_name = 'post_create.html'
@@ -86,14 +87,15 @@ class ArtDetail(DetailView):
     queryset = Post.objects.filter(post_type=Post.article_post)
 
 
-class ArtUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class ArtUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'art_update.html'
     queryset = Post.objects.filter(post_type=Post.article_post)
+    success_url = reverse_lazy('arts_list')
 
 
-class ArtDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class ArtDelete(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'art_delete.html'
     queryset = Post.objects.filter(post_type=Post.article_post)
@@ -142,7 +144,7 @@ class NewsDetail(DetailView):
     queryset = Post.objects.filter(post_type=Post.news_post)
 
 
-class NewsUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class NewsUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'news_update.html'
@@ -150,8 +152,37 @@ class NewsUpdate(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     success_url = reverse_lazy('news_list')
 
 
-class NewsDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class NewsDelete(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'news_delete.html'
     queryset = Post.objects.filter(post_type=Post.news_post)
     success_url = reverse_lazy('news_list')
+
+
+class CategoriesListView(PostsList):
+    model = Post
+    template_name = 'category_list.html'
+    context_object_name = 'category_post_list'
+
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(categories=self.category).order_by('-post_add')
+
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+        context['category'] = self.category
+        return context
+
+
+@login_required
+def subscribe_on_category(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.add(user)
+
+    message = 'Вы успешно подписались на рассылку новостей категории'
+    return render(request, 'subscribe.html', {'category': category, 'message': message})

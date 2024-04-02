@@ -8,12 +8,14 @@ All posts
 {% endblock title %}
 
 {% block content %}
-    <h1>Все события</h1>
+    <h1>Все события категории: "{{ category }}"</h1>
     <h1>{{ time_now|date:'d:M:Y' }}</h1>
-
+    {% if is_not_subscriber %}
+        <p><a href="{% url 'subscribe' category.id %}">Подписаться на категорию</a></p>
+    {% endif %}
     <h4>{{ next_post|default_if_none:"Наблюдаем за событиями...<br>Ищем новых авторов..."}}</h4>
 
-    {% if posts %}
+    {% if category_post_list %}
     <hr>
         <table>
             <tr>
@@ -27,7 +29,7 @@ All posts
                 <td>Ссылка</td>
             </tr>
 
-            {% for post in posts %}
+            {% for post in category_post_list %}
 
                 <tr>
                     <td>{{ post.post_type }}</td>

@@ -39,7 +39,7 @@ Articles
                     <td>{{ news.post_rating | like_valute }}</td>
                     <td>
                         {% for cat in news.categories.all %}
-                            {{ cat.name }}
+                            <a href="{% url 'categories_list' cat.id %}">{{ cat }}</a>
                             <br>
                         {% endfor %}
                     </td>

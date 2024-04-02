@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уведомление</title>
+</head>
+<body>
+    <h2>«Здравствуй, {{ user }}! Новая <a href="{{ link }}">статья</a> в твоём любимом разделе!».</h2>
+    <p> {{ instance.post_add | date:"d-M-Y" }}, если кратко: {{ instance.post_text |truncatechars:50 }} </p>
+    <br>
+    <p>{{ post.post_add }}</p>
+</body>
+</html>
