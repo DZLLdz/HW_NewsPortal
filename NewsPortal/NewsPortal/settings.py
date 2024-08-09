@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Newsportalapp.apps.NewsportalappConfig',
 
     'django_apscheduler',
+    'django_celery_beat',
     'django_filters',
     'sign_up',
     'protect',
@@ -69,7 +70,12 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'allauth.account.middleware.AccountMiddleware'
 
+
 ]
+# Add if cache_all_site
+# 'django.middleware.cache.UpdateCacheMiddleware',
+# 'django.middleware.cache.FetchFromCacheMiddleware',
+
 
 ROOT_URLCONF = 'NewsPortal.urls'
 
@@ -99,6 +105,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files')
     }
 }
 
@@ -176,3 +189,8 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

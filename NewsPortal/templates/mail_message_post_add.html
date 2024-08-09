@@ -6,9 +6,8 @@
     <title>Уведомление</title>
 </head>
 <body>
-    <h2>«Здравствуй, {{ user }}! Новая <a href="{{ link }}">статья</a> в твоём любимом разделе!».</h2>
-    <p> {{ instance.post_add | date:"d-M-Y" }}, если кратко: {{ instance.post_text |truncatechars:50 }} </p>
-    <br>
-    <p>{{ post.post_add }}</p>
+    <h2>«Здравствуй! Новая статья: <a href="{{ link }}">{{ title }}</a> в твоём любимом разделе!».</h2>
+    <hr>
+    <p> Если кратко: {{ text | truncatechars:50 }} </p>
 </body>
 </html>

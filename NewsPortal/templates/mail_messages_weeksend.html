@@ -5,16 +5,27 @@
     <title>Уведомление</title>
 </head>
 <body>
+    {% load custom_filters %}
     <h2>Приветствую Вас! Новые посты за неделю ждут вашего прочтения!</h2>
-    {% if post in posts %}
-    <ul>
+    {% if posts %}
+        <ul>
         {% for post in posts %}
-            <li><a href="{{ link }}{{ post.get_absolute_url }}">{{ post.post_name  }}</a></li>
-
+            <li>
+            {% if post.post_type == "ART" %}
+                <a href="{{ link }}/articles/{{ post.id }}">{{ post.post_name }}</a>
+            {% elif post.post_type == "NEWS" %}
+                <a href="{{ link }}/news/{{ post.id }}">{{ post.post_name }}</a>
+            {% endif %}
+                <p>[{{ post.post_add | date:'d:M:Y'}}]: {{ post.post_text | truncatechars:50 | censor_str }}</p>
+            </li>
         {% endfor %}
-    </ul>
-    {% elif %}
-
+        </ul>
+        <hr>
+    {% else %}
+        <hr>
+        <p>No articles available.</p>
+        <p><a href="{{ link }}">Invite</a></p>
+        <hr>
     {% endif %}
 </body>
 </html>

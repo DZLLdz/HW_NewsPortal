@@ -15,6 +15,7 @@ def send_mail_new_post(preview, pk, post_type, title, text, subscribers):
     html_content = render_to_string(
         'mail_message_post_add.html',
         {
+            'title': title,
             'text': text,
             'link': f'{os.getenv("SITE_URL")}/{"articles" if post_type=="ART" else "news"}/{pk}'
         }

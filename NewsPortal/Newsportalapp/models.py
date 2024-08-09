@@ -1,8 +1,12 @@
+import json
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
 from django.urls import reverse
+from django.core.cache import cache
 
 
 class Author(models.Model):
@@ -20,7 +24,7 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    subscribers = models.ManyToManyField(User, blank=True, null=True, related_name='categories', through='SubscribeCategory')
+    subscribers = models.ManyToManyField(User, blank=True, related_name='categories', through='SubscribeCategory')
 
     def __str__(self):
         return self.name
@@ -55,7 +59,12 @@ class Post(models.Model):
         return self.post_name
 
     def get_absolute_url(self):
-        return reverse('post_detail', args=[str(self.id)])
+        return reverse('news_detail' if self.post_type=='NEWS' else 'art_detail', args=[str(self.id)])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        cache.delete(f'post-{self.pk}')
 
     def like(self):
         self.post_rating += 1
@@ -72,6 +81,19 @@ class Post(models.Model):
         if len(self.post_text) > 124:
             post_text_preview = f"{self.post_text[0:121:]}..."
         return str(post_text_preview)
+
+    def toJSON(self):
+        def obj_handler(obj):
+            if isinstance(obj, datetime.datetime):
+                return obj.isoformat()
+            else:
+                return obj.__dict__
+
+        return json.dumps(
+            self,
+            default=lambda o: obj_handler(o),
+            sort_keys=True,
+            indent=4)
 
 
 class PostCategory(models.Model):

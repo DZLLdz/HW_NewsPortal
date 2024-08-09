@@ -5,9 +5,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.core.cache import cache
+import json
 from .models import Post, Comment, Category
 from .filters import PostFilter
 from .forms import PostForm
+from .tasks import printer, notify_about_new_post
 
 
 class PostCreate(LoginRequiredMixin, CreateView):
@@ -22,6 +25,12 @@ class PostCreate(LoginRequiredMixin, CreateView):
             post.post_type = 'ART'
         if '/news/create' in self.request.path:
             post.post_type = 'NEWS'
+
+        post.save()
+        get_post_inf = Post.objects.get(post_name=post)
+        post_json = get_post_inf.toJSON()
+        print(post_json)
+        notify_about_new_post.delay(post_json)
         return super().form_valid(form)
 
 
@@ -86,6 +95,14 @@ class ArtDetail(DetailView):
     context_object_name = 'art'
     queryset = Post.objects.filter(post_type=Post.article_post)
 
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+        return obj
+
 
 class ArtUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
@@ -142,6 +159,14 @@ class NewsDetail(DetailView):
     template_name = 'news_detail.html'
     context_object_name = 'news'
     queryset = Post.objects.filter(post_type=Post.news_post)
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+        return obj
 
 
 class NewsUpdate(LoginRequiredMixin, UpdateView):
