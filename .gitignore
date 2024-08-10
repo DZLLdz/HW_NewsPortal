@@ -8,3 +8,4 @@ NewsPortal/Newsportalapp/__pycache__/*
 NewsPortal/cache_files
 NewsPortal/NewsPortal/__init__.py
 .env
+NewsPortal/celerybeat-schedule.db
