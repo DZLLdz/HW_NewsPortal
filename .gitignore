@@ -1,15 +1,15 @@
 # created by virtualenv automatically
 Lib/*
 .idea/*
+.env
 Scripts/*
 pyvenv.cfg
 NewsPortal/NewsPortal/__pycache__/*
 NewsPortal/Newsportalapp/__pycache__/*
 NewsPortal/cache_files
 NewsPortal/NewsPortal/__init__.py
-.env
 NewsPortal/celerybeat-schedule.db
 NewsPortal/errors.log
 NewsPortal/general.log
 NewsPortal/security.log
-NewsPortal/celerybeat-schedule.db
+
