@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (NewsList, NewsSearchList, NewsDetail, NewsUpdate, NewsDelete,
                     ArtsList, ArtsSearchList, ArtDetail, ArtUpdate, ArtDelete,
-                    PostsList, PostCreate, CategoriesListView, subscribe_on_category)
+                    PostsList, PostCreate, CategoriesListView, subscribe_on_category,
+                    error_view)
 from django.views.decorators.cache import cache_page
 
 
@@ -21,4 +22,5 @@ urlpatterns = [
     path('articles/<int:pk>/delete/', ArtDelete.as_view(), name='art_delete'),
     path('categories/<int:pk>', cache_page(60*5)(CategoriesListView.as_view()), name='categories_list'),
     path('categories/<int:pk>/subscribe', subscribe_on_category, name='subscribe'),
+    path('trigger-error/', error_view),
 ]

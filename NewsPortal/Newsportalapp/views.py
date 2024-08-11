@@ -13,6 +13,11 @@ from .forms import PostForm
 from .tasks import printer, notify_about_new_post
 
 
+def error_view(request):
+    raise ValueError("This is a test error for logging")
+    return HttpResponse("This won't be reached")
+
+
 class PostCreate(LoginRequiredMixin, CreateView):
     form_class = PostForm
     model = Post

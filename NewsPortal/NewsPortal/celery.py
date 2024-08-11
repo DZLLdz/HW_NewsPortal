@@ -13,6 +13,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'send_mail_every_monday_8am': {
         'task': 'Newsportalapp.tasks.send_last_weak_post',
-        'schedule': crontab(hour=8, minute=0, day_of_week='monday'),
+        'schedule': crontab()
+        # 'schedule': crontab(hour=8, minute=0, day_of_week='monday'),
     },
 }
