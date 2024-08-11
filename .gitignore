@@ -9,3 +9,7 @@ NewsPortal/cache_files
 NewsPortal/NewsPortal/__init__.py
 .env
 NewsPortal/celerybeat-schedule.db
+NewsPortal/errors.log
+NewsPortal/general.log
+NewsPortal/security.log
+NewsPortal/celerybeat-schedule.db
